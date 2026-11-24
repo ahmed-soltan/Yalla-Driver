@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1063937834881",
+    "project_id": "yalla-driver-ab9bc",
+    "storage_bucket": "yalla-driver-ab9bc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063937834881:android:17052167209fb5795d7280",
+        "android_client_info": {
+          "package_name": "com.yalla.driver"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-UD6TnBm8jW46rOGqXTHlk548iGO68xY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063937834881:android:ae7021ebc2813f765d7280",
+        "android_client_info": {
+          "package_name": "com.yalla.driver.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-UD6TnBm8jW46rOGqXTHlk548iGO68xY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

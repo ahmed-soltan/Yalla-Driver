@@ -1,41 +1,174 @@
 {
   "expo": {
-    "name": "my-expo-app",
-    "slug": "my-expo-app",
-    "version": "1.0.0",
-
+    "name": "Yalla Driver Development",
+    "slug": "yalla-driver",
+    "version": "1.4.1",
+    "scheme": "yalla",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "userInterfaceStyle": "light",
+    "jsEngine": "hermes",
+    "ios": {
+      "jsEngine": "jsc",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yalla.driver.dev",
+      "buildNumber": "1.3.1",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to allow you to take photos and videos.",
+        "NSPhotoLibraryUsageDescription": "This app uses the photo library to allow you to select photos and videos.",
+        "NSPhotoLibraryAddUsageDescription": "This app uses the photo library to allow you to save photos and videos.",
+        "NSMicrophoneUsageDescription": "This app uses the microphone to allow you to record audio.",
+        "NSLocationWhenInUseUsageDescription": "يستخدم التطبيق موقعك لعرض موقعك الحالي وتحديد الرحلات القريبة منك.",
+        "UIBackgroundModes": ["audio", "fetch", "remote-notification"]
+      }
+    },
+    "extra": {
+      "apiBaseUrl": "https://api.yalla.com/api",
+      "versionCheckPath": "/app/version",
+      "environment": "development",
+      "appDomain": "yalla.com",
+      "protocol": "https",
+      "router": {},
+      "eas": {
+        "projectId": "598e5a88-14f1-4a67-9080-85882abf6d78"
+      }
+    },
+    "android": {
+      "package": "com.yalla.driver.dev",
+      "googleServicesFile": "./google-services.json",
+      "adaptiveIcon": {
+        "backgroundColor": "#E8754F",
+        "foregroundImage": "./assets/adaptive-icon.png"
+      },
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "category": ["BROWSABLE", "DEFAULT"],
+          "data": [
+            {
+              "scheme": "https",
+              "host": "driver.yalla.com",
+              "pathPrefix": "/invite"
+            }
+          ]
+        }
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDoTKjP28uZEHpnQ7CDKpcU5pSWjSTmKJs"
+        }
+      },
+      "predictiveBackGestureEnabled": false,
+      "softwareKeyboardLayoutMode": "resize",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.CAMERA"
+      ]
+    },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/logo.png"
     },
-
-    "experiments": {
-      "tsconfigPaths": true
-    },
-
     "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-notifications",
+      "expo-system-ui",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "يستخدم التطبيق موقعك لعرض موقعك الحالي وتحديد الرحلات القريبة منك."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Yalla to access your photos so you can submit work and update your profile picture."
+        }
+      ],
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "android": {
+            "fonts": [
+              {
+                "fontFamily": "Cairo",
+                "fontDefinitions": [
+                  {
+                    "path": "./assets/static/Cairo-ExtraLight.ttf",
+                    "weight": 200
+                  },
+                  {
+                    "path": "./assets/static/Cairo-Light.ttf",
+                    "weight": 300
+                  },
+                  {
+                    "path": "./assets/static/Cairo-Regular.ttf",
+                    "weight": 400
+                  },
+                  {
+                    "path": "./assets/static/Cairo-Medium.ttf",
+                    "weight": 500
+                  },
+                  {
+                    "path": "./assets/static/Cairo-SemiBold.ttf",
+                    "weight": 600
+                  },
+                  {
+                    "path": "./assets/static/Cairo-Bold.ttf",
+                    "weight": 700
+                  },
+                  {
+                    "path": "./assets/static/Cairo-ExtraBold.ttf",
+                    "weight": 800
+                  },
+                  {
+                    "path": "./assets/static/Cairo-Black.ttf",
+                    "weight": 900
+                  }
+                ]
+              }
+            ]
+          },
+          "ios": {
+            "fonts": [
+              "./assets/static/Cairo-Thin.ttf",
+              "./assets/static/Cairo-ExtraLight.ttf",
+              "./assets/static/Cairo-Light.ttf",
+              "./assets/static/Cairo-Regular.ttf",
+              "./assets/static/Cairo-Medium.ttf",
+              "./assets/static/Cairo-SemiBold.ttf",
+              "./assets/static/Cairo-Bold.ttf",
+              "./assets/static/Cairo-ExtraBold.ttf"
+            ]
+          }
+        }
+      ],
+      "expo-sharing",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/splash.png",
-          "backgroundColor": "#ffffff"
+          "image": "./assets/logo.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#FFFFFF",
+          "imageWidth": 200,
+          "imageHeight": 200
         }
-      ]
+      ],
+      "expo-camera",
+      "@react-native-community/datetimepicker"
     ],
-
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-
-    "userInterfaceStyle": "light",
-
-    "assetBundlePatterns": ["**/*"],
-    "ios": {
-      "supportsTablet": true
+    "experiments": {
+      "typedRoutes": true
     },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
-    }
+    "owner": "nabrahq-mobile"
   }
 }

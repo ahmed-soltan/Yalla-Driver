@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    font-family: 'Cairo';
+  }
+}
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 210 24% 15%;
+
+  --primary: 45 93% 47%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 45 93% 47%;
+  --secondary-foreground: 222 47% 11%;
+
+  --muted: 38 28% 87%;
+  --muted-foreground: 210 10% 45%;
+
+  --accent: 210 40% 96%;
+  --accent-foreground: 222 47% 11%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --success: 142 60% 40%;
+  --success-foreground: 0 0% 100%;
+
+  --warning: 35 100% 50%;
+  --warning-foreground: 222 47% 11%;
+
+  --border: 38 20% 78%;
+  --input: 38 20% 78%;
+  --ring: 45 93% 47%;
+
+  --radius: 0.625rem;
+
+  --font-cairo: Cairo;
+  --font-cairo-medium: CairoMedium;
+  --font-cairo-semibold: CairoSemiBold;
+  --font-cairo-bold: CairoBold;
+
+  --font-sans: var(--font-cairo);
+
+  --lesson-card: 210 20% 98%;
+  --lesson-card-foreground: 222 47% 11%;
+
+  --xs: 0.75rem;
+  --sm: 0.875rem;
+  --md: 1rem;
+  --lg: 1.125rem;
+  --xl: 1.25rem;
+  --2xl: 1.5rem;
+  --3xl: 1.875rem;
+  --4xl: 2.25rem;
+  --5xl: 3rem;
+  --6xl: 4rem;
+}
+
+.dark {
+  --background: 222 29% 5%;
+  --foreground: 210 40% 96%;
+
+  --primary: 45 93% 47%;
+  --primary-foreground: 222 47% 11%;
+
+  --secondary: 45 93% 47%;
+  --secondary-foreground: 222 47% 11%;
+
+  --muted: 215 28% 17%;
+  --muted-foreground: 215 20% 65%;
+
+  --card: 217 33% 11%;
+  --card-foreground: 210 40% 96%;
+
+  --popover: 217 33% 11%;
+  --popover-foreground: 210 40% 96%;
+
+  --accent: 215 28% 17%;
+  --accent-foreground: 210 40% 96%;
+
+  --destructive: 0 91% 71%;
+  --destructive-foreground: 222 47% 11%;
+
+  --success: 158 60% 51%;
+  --success-foreground: 222 47% 11%;
+
+  --warning: 35 100% 50%;
+  --warning-foreground: 222 47% 11%;
+
+  --border: 215 28% 17%;
+  --input: 215 28% 17%;
+  --ring: 45 93% 47%;
+}
+
+* {
+  font-family: 'Cairo';
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overscroll-behavior: none;
+}
