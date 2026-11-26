@@ -34,7 +34,15 @@ export function TripsScreen() {
 
   const header = (
     <View style={{ gap: 16, paddingBottom: 4 }}>
-      <Text style={{ color: BRAND.text, fontSize: 26, fontWeight: '700' }}>الرحلات</Text>
+      <Text
+        style={{
+          color: BRAND.text,
+          fontSize: 26,
+          fontWeight: '700',
+          lineHeight: 32,
+        }}>
+        الرحلات
+      </Text>
       <TripFilter value={filter} onChange={setFilter} />
     </View>
   );

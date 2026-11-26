@@ -11,8 +11,6 @@ import { BRAND } from '@/shared/config/theme';
 import { useCaptainHome, useSetAvailability } from '@/features/home/services/use-captain-home';
 import { useLocationPermission } from '@/features/home/services/use-location-permission';
 import { useOfferStore } from '@/features/offers/model/offer-store';
-import { ActiveOrderBanner } from '@/features/active-order/ui/active-order-banner';
-import { OfferOverlay } from '@/features/offers/ui/offer-overlay';
 import { GoalRingButton } from '@/features/home/ui/goal-ring-button';
 import { HomeSheet, type SheetBlocker } from '@/features/home/ui/home-sheet';
 import { OnlineSheet } from '@/features/home/ui/online-sheet';
@@ -196,7 +194,7 @@ export function HomeScreen() {
           position: 'absolute',
           start: 0,
           end: 0,
-          bottom: TAB_BAR_CLEARANCE + insets.bottom,
+          bottom: TAB_BAR_CLEARANCE,
           display: hasOffer || showOnlineSheet ? 'none' : 'flex',
         }}>
         {home.isLoading ? (
@@ -295,9 +293,6 @@ export function HomeScreen() {
       {showOnlineSheet && !currentOrder && summary?.demandHint ? (
         <DemandChip text={summary.demandHint} />
       ) : null}
-
-      <ActiveOrderBanner />
-      <OfferOverlay />
     </View>
   );
 }

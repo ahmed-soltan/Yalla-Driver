@@ -12,6 +12,7 @@ import { formatMoney } from '@/shared/lib/format-money';
 import type { CaptainHomeSummary } from '../services/use-captain-home';
 import { TodayStats, type SheetBlocker } from './home-sheet';
 import { WarningList } from './warning-list';
+import { TAB_BAR_CLEARANCE } from '../constants/home-constants';
 
 const COLLAPSED = 92;
 const EXPANDED = 460;
@@ -55,14 +56,13 @@ export function OnlineSheet({
       index={index}
       onChange={(i) => setIndex(i)}
       snapPoints={snapPoints}
-      bottomInset={0}
+      bottomInset={TAB_BAR_CLEARANCE}
       enableDynamicSizing={false}
       enablePanDownToClose={false}
-      handleIndicatorStyle={{ backgroundColor: BRAND.line, width: 40 }}
+      handleIndicatorStyle={{ backgroundColor: BRAND.line, width: 30 }}
       backgroundStyle={{
         backgroundColor: BRAND.background,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
+        borderRadius: 20,
         borderWidth: 1,
         borderColor: BRAND.line,
       }}>

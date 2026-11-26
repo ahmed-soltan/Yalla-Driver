@@ -8,11 +8,10 @@ export type CaptainTodaySummary = {
   demandHint: string | null; // e.g. "طلب عالي في حي الأربعين"
 };
 
+/** Body of POST /captain/location. No captainId (from the token) and no timestamp (the server sets it). */
 export type CaptainLocationPoint = {
   latitude: number;
   longitude: number;
-  heading: number | null;
-  speed: number | null;
-  accuracy: number | null;
-  recordedAt: number; // ms epoch
+  heading: number | null; // degrees 0-360, null when unknown
+  speed: number | null; // meters per second as reported by the device, null when unknown
 };

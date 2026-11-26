@@ -14,14 +14,13 @@ type TabBarProps = Parameters<NonNullable<ComponentProps<typeof Tabs>['tabBar']>
 
 // Only these routes appear, in this order. Any other file under (tabs) stays hidden.
 const TABS: { name: string; label: string; Icon: LucideIcon }[] = [
-  { name: 'index', label: 'الرئيسية', Icon: House },
+  { name: 'home', label: 'الرئيسية', Icon: House },
   { name: 'trips', label: 'الرحلات', Icon: ClipboardList },
   { name: 'stats', label: 'الإحصائيات', Icon: Wallet },
   { name: 'profile', label: 'الملف الشخصي', Icon: User },
 ];
 
 const BAR_HEIGHT = 64;
-const BAR_MARGIN = 12;
 
 export function CaptainTabBar({ state, navigation }: TabBarProps) {
   const insets = useSafeAreaInsets();
@@ -35,13 +34,14 @@ export function CaptainTabBar({ state, navigation }: TabBarProps) {
     <View
       style={{
         position: 'absolute',
-        start: 16,
-        end: 16,
-        bottom: insets.bottom + BAR_MARGIN,
+        start: 0,
+        end: 0,
+        bottom: insets.bottom,
         height: BAR_HEIGHT,
         flexDirection: 'row-reverse',
         backgroundColor: BRAND.background,
-        borderRadius: 24,
+        borderTopLeftRadius: 24,
+        borderTopRightRadius: 24,
         borderWidth: 1,
         borderColor: BRAND.line,
         padding: 6,

@@ -35,7 +35,7 @@ export function ReceiptCard({ receipt, busy, failed, onSubmit }: Props) {
         }}>
         <CircleCheck size={22} color={BRAND.success} />
         <Text style={{ color: BRAND.success, fontSize: 15, fontWeight: '700' }}>
-          تم رفع الفاتورة · {formatMoney(receipt.amountPiastres)}
+          تم رفع الفاتورة - {formatMoney(receipt.amountPiastres)}
         </Text>
       </View>
     );
@@ -71,9 +71,10 @@ export function ReceiptCard({ receipt, busy, failed, onSubmit }: Props) {
             borderWidth: 1,
             borderColor: BRAND.line,
             paddingHorizontal: 14,
-            fontSize: 16,
+            fontSize: 14,
             color: BRAND.text,
             textAlign: 'right',
+            fontFamily: "Cairo"
           }}
         />
         <Text style={{ color: BRAND.muted, fontSize: 15 }}>ج.م</Text>

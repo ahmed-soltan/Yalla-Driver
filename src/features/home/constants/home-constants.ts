@@ -7,7 +7,7 @@ export const SHEBIN_EL_KOM = {
 };
 
 // Space the floating tab bar takes at the bottom. Adjust to your real bar height.
-export const TAB_BAR_CLEARANCE = 84;
+export const TAB_BAR_CLEARANCE = 70;
 
 export const RING_SIZE = 136;
 export const RING_STROKE = 7;

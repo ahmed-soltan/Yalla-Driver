@@ -15,6 +15,7 @@ import {
 } from '@/features/profile/service/use-captain-profile';
 import { ScreenHeader } from '@/shared/ui/screen-layout';
 import { StatusChip } from '@/features/profile/ui/status-chip';
+import { TAB_BAR_CLEARANCE } from '@/shared/config/tab-bar';
 
 const VEHICLE_TYPE: Record<string, string> = {
   CAR: 'سيارة',
@@ -76,7 +77,7 @@ export function VehicleScreen() {
   const rejectionReason = vehicle.data?.rejectionReason ?? v?.vehicle.rejectionReason ?? null;
 
   return (
-    <View style={{ flex: 1, backgroundColor: BRAND.surface, paddingTop: insets.top + 20 }}>
+    <View style={{ flex: 1, backgroundColor: BRAND.surface, paddingTop: insets.top + 20, paddingBottom: TAB_BAR_CLEARANCE  }}>
       <ScreenHeader title="المركبة" />
 
       {vehicle.isLoading || verification.isLoading ? (

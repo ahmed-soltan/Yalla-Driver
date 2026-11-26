@@ -3,6 +3,19 @@ import { useCallback, useEffect, useState } from 'react';
 import { AppState, Linking } from 'react-native';
 import * as Location from 'expo-location';
 
+let foregroundPermissionRequest: ReturnType<
+  typeof Location.requestForegroundPermissionsAsync
+> | null = null;
+
+function requestForegroundPermission() {
+  if (!foregroundPermissionRequest) {
+    foregroundPermissionRequest = Location.requestForegroundPermissionsAsync();
+  }
+  return foregroundPermissionRequest.finally(() => {
+    foregroundPermissionRequest = null;
+  });
+}
+
 export function useLocationPermission() {
   const [granted, setGranted] = useState(false);
   const [canAskAgain, setCanAskAgain] = useState(true);
@@ -16,8 +29,20 @@ export function useLocationPermission() {
   }, []);
 
   useEffect(() => {
-    // eslint-disable-next-line
-    refresh();
+    const initialize = async () => {
+      const current = await Location.getForegroundPermissionsAsync();
+      if (!current.granted && current.canAskAgain) {
+        const requested = await requestForegroundPermission();
+        setGranted(requested.granted);
+        setCanAskAgain(requested.canAskAgain);
+        setChecked(true);
+        return;
+      }
+      setGranted(current.granted);
+      setCanAskAgain(current.canAskAgain);
+      setChecked(true);
+    };
+    initialize();
     // Re-check when he comes back from system settings
     const sub = AppState.addEventListener('change', (s) => {
       if (s === 'active') refresh();
@@ -26,7 +51,7 @@ export function useLocationPermission() {
   }, [refresh]);
 
   const request = useCallback(async () => {
-    const p = await Location.requestForegroundPermissionsAsync();
+    const p = await requestForegroundPermission();
     setGranted(p.granted);
     setCanAskAgain(p.canAskAgain);
     return p.granted;

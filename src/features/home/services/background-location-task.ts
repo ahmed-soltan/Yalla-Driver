@@ -3,7 +3,7 @@
 // task is defined when the OS wakes the app in the background.
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
-import { sendLocation } from '@/entities/home/api/home-api';
+import { feedLocation, flushLocation, toLocationPoint } from './location-sender';
 
 export const CAPTAIN_LOCATION_TASK = 'yalla-captain-location';
 
@@ -12,18 +12,11 @@ TaskManager.defineTask(CAPTAIN_LOCATION_TASK, async ({ data, error }) => {
   const { locations } = data as { locations: Location.LocationObject[] };
   const last = locations[locations.length - 1];
   if (!last) return;
-  try {
-    await sendLocation({
-      latitude: last.coords.latitude,
-      longitude: last.coords.longitude,
-      heading: last.coords.heading,
-      speed: last.coords.speed,
-      accuracy: last.coords.accuracy,
-      recordedAt: last.timestamp,
-    });
-  } catch {
-    // Next tick will send a fresh point. Nothing to retry here.
-  }
+  // Same sender as the foreground timer: it dedupes, never overlaps, and sends at most
+  // one request per ~5 seconds. The JS timer may be suspended in the background, so the
+  // task flushes itself whenever the OS wakes it with a new fix.
+  feedLocation(toLocationPoint(last.coords));
+  await flushLocation();
 });
 
 /** Returns true if background updates are running. False means foreground only. */

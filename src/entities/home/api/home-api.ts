@@ -39,6 +39,6 @@ export async function setAvailability(online: boolean): Promise<{ isOnline: bool
 }
 
 export async function sendLocation(point: CaptainLocationPoint): Promise<void> {
-  if (USE_MOCK) return;
+  // if (USE_MOCK) return;
   await request<void>({ method: 'POST', url: '/captain/location', data: point });
 }

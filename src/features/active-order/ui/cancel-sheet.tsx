@@ -41,7 +41,7 @@ export function CancelSheet({ visible, busy, failed, onClose, onConfirm }: Props
             paddingBottom: insets.bottom + 20,
             gap: 12,
           }}>
-          <Text style={{ color: BRAND.text, fontSize: 18, fontWeight: '700' }}>
+          <Text style={{ color: BRAND.text, fontSize: 18, fontWeight: '700', lineHeight: 28 }}>
             ليه عايز تلغي الطلب؟
           </Text>
 
@@ -90,12 +90,20 @@ export function CancelSheet({ visible, busy, failed, onClose, onConfirm }: Props
               backgroundColor: BRAND.danger,
               alignItems: 'center',
               justifyContent: 'center',
-              opacity: !reason ? 0.4 : 1,
+              flex: 1,
+              opacity: !reason || busy ? 0.4 : 1,
             }}>
             {busy ? (
               <ActivityIndicator color={BRAND.onPrimary} />
             ) : (
-              <Text style={{ color: BRAND.onPrimary, fontSize: 16, fontWeight: '700' }}>
+              <Text
+                numberOfLines={1}
+                style={{
+                  color: BRAND.onPrimary,
+                  fontSize: 16,
+                  fontWeight: '600',
+                  textAlign: 'center',
+                }}>
                 تأكيد الإلغاء
               </Text>
             )}

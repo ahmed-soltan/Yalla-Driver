@@ -14,6 +14,7 @@ import { BRAND } from '@/shared/config/theme';
 import { documentTypeLabels, type DocumentFileSide } from '@/entities/captain/model/captain-types';
 import { useSubmitDocument, useVerification } from '@/features/profile/service/use-captain-profile';
 import { ScreenHeader } from '@/shared/ui/screen-layout';
+import { TAB_BAR_CLEARANCE } from '@/shared/config/tab-bar';
 
 const NUMBER_LABEL: Record<string, string> = {
   NATIONAL_ID: 'رقم البطاقة',
@@ -117,7 +118,7 @@ export function DocumentSubmitScreen({ type }: { type: string }) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: BRAND.background, paddingTop: insets.top + 20 }}>
+    <View style={{ flex: 1, backgroundColor: BRAND.background, paddingTop: insets.top + 20, paddingBottom: TAB_BAR_CLEARANCE  }}>
       <ScreenHeader title={label} />
       <ScrollView
         keyboardShouldPersistTaps="handled"

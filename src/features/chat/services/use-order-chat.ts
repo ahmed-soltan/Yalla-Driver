@@ -65,6 +65,14 @@ export function useOrderChat(orderId: string) {
               ),
             }));
             break;
+          case 'send_failed':
+            update((old) => ({
+              ...old,
+              items: old.items.map((m) =>
+                m.clientId === e.clientId ? { ...m, pending: false, failed: true } : m
+              ),
+            }));
+            break;
           case 'typing':
             setTyping(true);
             if (typingTimer) clearTimeout(typingTimer);

@@ -9,6 +9,7 @@ import { profileHref } from '@/shared/lib/routes';
 import { DocumentCard } from '@/features/profile/ui/document-card';
 import { useVerification } from '@/features/profile/service/use-captain-profile';
 import { ScreenHeader } from '@/shared/ui/screen-layout';
+import { TAB_BAR_CLEARANCE } from '@/shared/config/tab-bar';
 
 export function DocumentsScreen() {
   const insets = useSafeAreaInsets();
@@ -20,7 +21,7 @@ export function DocumentsScreen() {
     : [];
 
   return (
-    <View style={{ flex: 1, backgroundColor: BRAND.surface, paddingTop: insets.top + 20 }}>
+    <View style={{ flex: 1, backgroundColor: BRAND.surface, paddingTop: insets.top + 20, paddingBottom: TAB_BAR_CLEARANCE }}>
       <ScreenHeader title="المستندات" />
 
       {verification.isLoading ? (

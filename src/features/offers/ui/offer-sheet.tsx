@@ -229,6 +229,9 @@ export function OfferSheet({ offer }: { offer: QueuedOffer }) {
         type: 'info',
         text1: pending ? 'العميل مردش على عرضك' : 'فاتك الطلب',
         text2: 'هنوصلك طلب تاني قريب.',
+        text1Style: { fontSize: 14, fontWeight: '700', textAlign: 'right', fontFamily: 'Cairo' },
+        text2Style: { fontSize: 12, textAlign: 'right', fontFamily: 'Cairo' },
+        visibilityTime: 4000,
       });
       remove(offer.orderId);
     }
@@ -287,14 +290,14 @@ export function OfferSheet({ offer }: { offer: QueuedOffer }) {
         ) : null}
 
         {/* Header */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+        <View style={{ flexDirection: 'row-reverse', alignItems: 'center', gap: 10 }}>
           <Icon size={22} color={BRAND.dark} />
           <View style={{ flex: 1 }}>
             <Text style={{ color: BRAND.text, fontSize: 16, fontWeight: '700' }}>{label}</Text>
             <Text style={{ color: BRAND.muted, fontSize: 12 }}>{offer.orderNumber}</Text>
           </View>
           <View style={{ alignItems: 'flex-end' }}>
-            <Text style={{ color: BRAND.text, fontSize: 26, fontWeight: '700' }}>
+            <Text style={{ color: BRAND.text, fontSize: 26, fontWeight: '700', lineHeight: 32 }}>
               {formatMoney(pricing.estimatedCaptainNetPiastres)}
             </Text>
             <Text style={{ color: BRAND.muted, fontSize: 12 }}>
@@ -304,7 +307,7 @@ export function OfferSheet({ offer }: { offer: QueuedOffer }) {
         </View>
 
         {/* Distances */}
-        <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+        <View style={{ flexDirection: 'row-reverse', gap: 8, flexWrap: 'wrap' }}>
           <Chip
             text={`بعيد عنك ${formatDistance(offer.pickupDistanceMeters)} · ${formatMinutes(offer.pickupEtaSeconds)}`}
           />
@@ -314,7 +317,7 @@ export function OfferSheet({ offer }: { offer: QueuedOffer }) {
         </View>
 
         {/* Route */}
-        <View style={{ flexDirection: 'row', gap: 12 }}>
+        <View style={{ flexDirection: 'row-reverse', gap: 12 }}>
           <View style={{ alignItems: 'center', paddingVertical: 5 }}>
             <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: BRAND.teal }} />
             <View style={{ flex: 1, width: 2, backgroundColor: BRAND.line, marginVertical: 3 }} />
@@ -364,7 +367,7 @@ export function OfferSheet({ offer }: { offer: QueuedOffer }) {
           <View style={{ gap: 12 }}>
             <View
               style={{
-                flexDirection: 'row',
+                flexDirection: 'row-reverse',
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
@@ -396,7 +399,7 @@ export function OfferSheet({ offer }: { offer: QueuedOffer }) {
               disabled={busy}
               onPress={() => counter.mutate({ orderId: offer.orderId, farePiastres: counterFare })}
             />
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row-reverse' }}>
               <OutlineButton label="رجوع" disabled={busy} onPress={() => setCounterMode(false)} />
             </View>
           </View>
@@ -408,7 +411,7 @@ export function OfferSheet({ offer }: { offer: QueuedOffer }) {
               disabled={busy}
               onPress={() => accept.mutate(offer.orderId)}
             />
-            <View style={{ flexDirection: 'row', gap: 10 }}>
+            <View style={{ flexDirection: 'row-reverse', gap: 10 }}>
               <OutlineButton
                 label="ارفض"
                 disabled={busy}

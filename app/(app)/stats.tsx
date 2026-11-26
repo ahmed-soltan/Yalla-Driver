@@ -1,9 +1,8 @@
-// app/(app)/(tabs)/profile.tsx  (placeholder: replace in its phase)
 import { View } from 'react-native';
 import { Text } from '@/shared/ui/text';
 import { BRAND } from '@/shared/config/theme';
 
-export default function ProfileRoute() {
+export default function StatsRoute() {
   return (
     <View
       style={{
@@ -12,7 +11,7 @@ export default function ProfileRoute() {
         justifyContent: 'center',
         backgroundColor: BRAND.background,
       }}>
-      <Text style={{ color: BRAND.text, fontSize: 20, fontWeight: '700' }}>الملف الشخصي</Text>
+      <Text style={{ color: BRAND.text, fontSize: 20, fontWeight: '700' }}>الإحصائيات</Text>
     </View>
   );
 }

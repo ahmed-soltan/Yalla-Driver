@@ -26,7 +26,7 @@ export function ChatScreen({ orderId }: { orderId: string }) {
   const partner = order ? getChatPartner(order) : null;
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={{ flex: 1, backgroundColor: BRAND.background }}>
+    <KeyboardAvoidingView behavior="padding"style={{ flex: 1, backgroundColor: BRAND.background }}>
       {/* Header */}
       <View
         style={{

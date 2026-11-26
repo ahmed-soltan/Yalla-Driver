@@ -15,6 +15,7 @@ import { NetworkStatusListener } from '@/shared/ui/network-listener';
 import { useNetworkStatus } from '@/shared/hooks/use-network-status';
 import { AppVersionGate } from '@/shared/ui/app-version-gate';
 import { useAppVersionCheck } from '@/shared/hooks/use-app-version-check';
+import '@/features/home/services/background-location-task';
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({

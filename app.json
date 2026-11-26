@@ -2,7 +2,7 @@
   "expo": {
     "name": "Yalla Driver Development",
     "slug": "yalla-driver",
-    "version": "1.4.1",
+    "version": "1.5.0",
     "scheme": "yalla",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
@@ -19,7 +19,7 @@
         "NSPhotoLibraryAddUsageDescription": "This app uses the photo library to allow you to save photos and videos.",
         "NSMicrophoneUsageDescription": "This app uses the microphone to allow you to record audio.",
         "NSLocationWhenInUseUsageDescription": "يستخدم التطبيق موقعك لعرض موقعك الحالي وتحديد الرحلات القريبة منك.",
-        "UIBackgroundModes": ["audio", "fetch", "remote-notification"]
+        "UIBackgroundModes": ["audio", "fetch", "remote-notification", "location"]
       }
     },
     "extra": {
@@ -54,11 +54,6 @@
           ]
         }
       ],
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyDoTKjP28uZEHpnQ7CDKpcU5pSWjSTmKJs"
-        }
-      },
       "predictiveBackGestureEnabled": false,
       "softwareKeyboardLayoutMode": "resize",
       "permissions": [
@@ -79,7 +74,11 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "يستخدم التطبيق موقعك لعرض موقعك الحالي وتحديد الرحلات القريبة منك."
+          "locationWhenInUsePermission": "يستخدم التطبيق موقعك لعرض موقعك الحالي وتحديد الرحلات القريبة منك.",
+          "locationAlwaysAndWhenInUsePermission": "يستخدم التطبيق موقعك لمتابعة الرحلات وتوصيل الطلبات حتى عند إغلاق التطبيق.",
+          "isAndroidBackgroundLocationEnabled": true,
+          "isAndroidForegroundServiceEnabled": true,
+          "isIosBackgroundLocationEnabled": true
         }
       ],
       [

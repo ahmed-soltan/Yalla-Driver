@@ -1,16 +1,23 @@
 // src/features/home/services/use-captain-location.ts
-// Mounted once in the app shell (see app-shell/captain-runtime.tsx), NOT in a screen,
+// Mounted once in the app shell (see app-shell/captain-location-bridge.tsx), NOT in a screen,
 // so tracking keeps running when Home unmounts (e.g. during an active order).
 import { useEffect } from 'react';
 import * as Location from 'expo-location';
 import { startBackgroundLocation, stopBackgroundLocation } from './background-location-task';
+import {
+  LOCATION_SEND_INTERVAL_MS,
+  clearLocation,
+  feedLocation,
+  flushLocation,
+  toLocationPoint,
+} from './location-sender';
 import { useLocationStore } from '../model/use-location-store';
-import { sendLocation } from '@/entities/home/api/home-api';
 
 /**
  * Always tracks the position for the map while permitted.
- * While `streaming` is true (online, or working on an order) it also sends it to the
- * backend: background task when permitted, otherwise foreground only.
+ * While `streaming` is true (online, or working on an order) the newest fix is sent to
+ * POST /captain/location through location-sender: one request every ~5 seconds, never
+ * overlapping, never from SignalR. The background task feeds the same sender.
  */
 export function useCaptainLocation({
   permitted,
@@ -21,9 +28,8 @@ export function useCaptainLocation({
 }) {
   const setPosition = useLocationStore((s) => s.setPosition);
   const setBackgroundActive = useLocationStore((s) => s.setBackgroundActive);
-  const backgroundActive = useLocationStore((s) => s.backgroundActive);
 
-  // Position for the map (and foreground sending when background is not running)
+  // GPS for the map. Each fix is also remembered for the sender (it does not send by itself).
   useEffect(() => {
     if (!permitted) return;
     let cancelled = false;
@@ -34,16 +40,7 @@ export function useCaptainLocation({
         { accuracy: Location.Accuracy.Balanced, distanceInterval: 15, timeInterval: 4000 },
         (loc) => {
           setPosition({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
-          if (streaming && !backgroundActive) {
-            sendLocation({
-              latitude: loc.coords.latitude,
-              longitude: loc.coords.longitude,
-              heading: loc.coords.heading,
-              speed: loc.coords.speed,
-              accuracy: loc.coords.accuracy,
-              recordedAt: loc.timestamp,
-            }).catch(() => {});
-          }
+          feedLocation(toLocationPoint(loc.coords));
         }
       );
       if (cancelled) s.remove();
@@ -54,9 +51,21 @@ export function useCaptainLocation({
       cancelled = true;
       sub?.remove();
     };
-  }, [permitted, streaming, backgroundActive, setPosition]);
+  }, [permitted, setPosition]);
 
-  // Background streaming
+  // The heartbeat: one request every 5 s while streaming, even if the captain is stationary
+  // (so Redis does not expire). Stops, and forgets the position, when streaming ends.
+  useEffect(() => {
+    if (!permitted || !streaming) {
+      clearLocation();
+      return;
+    }
+    flushLocation();
+    const id = setInterval(() => flushLocation(), LOCATION_SEND_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [permitted, streaming]);
+
+  // Background updates keep the OS delivering fixes when the app is not in front.
   useEffect(() => {
     if (!permitted || !streaming) {
       stopBackgroundLocation().catch(() => {});

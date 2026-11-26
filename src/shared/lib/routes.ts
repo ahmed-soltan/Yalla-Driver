@@ -2,7 +2,7 @@
 import type { Href } from 'expo-router';
 
 export const activeOrderHref = (orderId: string) => `/(app)/orders/${orderId}` as Href;
-export const homeHref = '/(app)/(tabs)' as Href;
+export const homeHref = '/(app)/home' as Href;
 
 export const chatHref = (orderId: string) => `/(app)/chat/${orderId}` as Href;
 

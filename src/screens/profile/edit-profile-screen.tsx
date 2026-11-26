@@ -13,6 +13,7 @@ import { formatDate } from '@/shared/lib/format-date';
 import { BRAND } from '@/shared/config/theme';
 import { useProfile, useUpdateProfile } from '@/features/profile/service/use-captain-profile';
 import { ScreenHeader } from '@/shared/ui/screen-layout';
+import { TAB_BAR_CLEARANCE } from '@/shared/config/tab-bar';
 
 const schema = z.object({
   fullName: z.string().trim().min(3, 'الاسم لازم يكون ٣ حروف على الأقل'),
@@ -85,7 +86,7 @@ export function EditProfileScreen() {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: BRAND.background, paddingTop: insets.top + 20 }}>
+    <View style={{ flex: 1, backgroundColor: BRAND.background, paddingTop: insets.top + 20, paddingBottom: TAB_BAR_CLEARANCE  }}>
       <ScreenHeader title="بياناتي" />
 
       {profile.isLoading ? (

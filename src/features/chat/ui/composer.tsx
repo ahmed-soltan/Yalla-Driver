@@ -1,10 +1,11 @@
 // src/features/chat/ui/composer.tsx
-import { useState } from 'react';
-import { Pressable, ScrollView, TextInput, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Keyboard, Pressable, ScrollView, TextInput, View } from 'react-native';
 import { Send } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from '@/shared/ui/text';
 import { BRAND } from '@/shared/config/theme';
+import { TAB_BAR_CLEARANCE } from '@/shared/config/tab-bar';
 
 // One tap while driving is safer than typing.
 const QUICK_REPLIES = ['وصلت', 'أنا في الطريق', 'هوصل خلال ٥ دقايق', 'ممكن تتصل بيا؟'];
@@ -18,7 +19,22 @@ type Props = {
 export function Composer({ disabled, onSend, onTyping }: Props) {
   const insets = useSafeAreaInsets();
   const [text, setText] = useState('');
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(Keyboard.isVisible());
   const canSend = !disabled && text.trim().length > 0;
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setIsKeyboardVisible(true);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setIsKeyboardVisible(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
 
   const submit = () => {
     if (!canSend) return;
@@ -33,7 +49,7 @@ export function Composer({ disabled, onSend, onTyping }: Props) {
         borderTopColor: BRAND.line,
         backgroundColor: BRAND.background,
         paddingTop: 8,
-        paddingBottom: insets.bottom + 8,
+        paddingBottom: isKeyboardVisible ? insets.bottom : TAB_BAR_CLEARANCE + insets.bottom,
         gap: 8,
       }}>
       <ScrollView
@@ -90,9 +106,10 @@ export function Composer({ disabled, onSend, onTyping }: Props) {
             paddingHorizontal: 16,
             paddingTop: 12,
             paddingBottom: 12,
-            fontSize: 16,
+            fontSize: 14,
             color: BRAND.text,
             textAlign: 'right',
+            fontFamily: 'Cairo',
           }}
         />
         <Pressable

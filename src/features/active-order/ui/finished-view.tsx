@@ -8,6 +8,7 @@ import { BRAND } from '@/shared/config/theme';
 import { formatMoney } from '@/shared/lib/format-money';
 import { homeHref } from '@/shared/lib/routes';
 import type { ActiveOrder } from '@/entities/order/model/active-order-types';
+import { TAB_BAR_CLEARANCE } from '@/shared/config/tab-bar';
 
 const CANCELLED_BY: Record<string, string> = {
   CUSTOMER: 'العميل لغى الطلب.',
@@ -25,7 +26,7 @@ export function FinishedView({ order }: { order: ActiveOrder }) {
         flex: 1,
         backgroundColor: BRAND.background,
         paddingTop: insets.top + 24,
-        paddingBottom: insets.bottom + 20,
+        paddingBottom: insets.bottom + TAB_BAR_CLEARANCE,
         paddingHorizontal: 24,
       }}>
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 }}>
@@ -34,13 +35,13 @@ export function FinishedView({ order }: { order: ActiveOrder }) {
         ) : (
           <CircleX size={64} color={BRAND.danger} />
         )}
-        <Text style={{ color: BRAND.text, fontSize: 24, fontWeight: '700' }}>
+        <Text style={{ color: BRAND.text, fontSize: 24, fontWeight: '700', lineHeight: 32 }}>
           {done ? 'تم بنجاح' : 'الطلب اتلغى'}
         </Text>
         {done ? (
           <>
             <Text style={{ color: BRAND.muted, fontSize: 14 }}>ربحك من الطلب</Text>
-            <Text style={{ color: BRAND.text, fontSize: 36, fontWeight: '700' }}>
+            <Text style={{ color: BRAND.text, fontSize: 36, fontWeight: '700', lineHeight: 48 }}>
               {formatMoney(order.pricing.captainNetPiastres)}
             </Text>
           </>

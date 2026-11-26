@@ -1,21 +1,25 @@
 // src/features/chat/services/chat-socket.ts
+// Order chat over its own SignalR hub (separate from the order hub).
+// Protocol: docs/CAPTAIN_API_CONTRACT.md section 5. The rest of the app (hook, screen) only
+// sees ChatServerEvent, so the transport can change without touching them.
+import * as signalR from '@microsoft/signalr';
 import Constants from 'expo-constants';
-// ASSUMPTION: same token source as order-hub.ts. Point it at your auth store / secure-store.
 import type { ChatMessage } from '@/entities/chat/model/chat-types';
 import { secureStorage, storageKeys } from '@/shared/lib/storage';
 
 export const USE_MOCK_CHAT = __DEV__;
 
-// Server events, per BACKEND_API_CONTRACT section 9.
 export type ChatServerEvent =
   | { type: 'message'; message: ChatMessage }
   | { type: 'ack'; clientId: string; id: string; createdAt: string }
   | { type: 'typing' }
   | { type: 'read'; at: string }
-  | { type: 'closed' };
+  | { type: 'closed' }
+  // Raised by this client when the server rejected SendMessage (not a hub event)
+  | { type: 'send_failed'; clientId: string };
 
 export type ChatSocket = {
-  /** Returns false when the socket is not open (the message was NOT sent). */
+  /** Returns false when the connection is not open (the message was NOT sent). */
   send: (text: string, clientId: string) => boolean;
   typing: () => void;
   read: () => void;
@@ -74,69 +78,113 @@ function createMockSocket(opts: Options): ChatSocket {
   };
 }
 
-/** Opens the order chat. Reconnects with exponential backoff; close() never reconnects. */
+// Hub -> client payloads (camelCase JSON). Every one carries the orderId.
+type HubMessage = { orderId: string; message: ChatMessage };
+type HubAck = { orderId: string; clientId: string; id: string; createdAt: string };
+type HubRead = { orderId: string; at: string };
+type HubOrder = { orderId: string };
+
+const retryDelay = (attempt: number) => Math.min(15000, 1000 * 2 ** attempt);
+
+/**
+ * Opens the order chat. Reconnects forever with exponential backoff (max 15 s);
+ * close() stops it for good. A SignalR group is lost when the connection drops, so the
+ * order is joined again after every reconnect.
+ */
 export function createChatSocket(opts: Options): ChatSocket {
   if (USE_MOCK_CHAT) return createMockSocket(opts);
 
-  let ws: WebSocket | null = null;
+  const url = Constants.expoConfig?.extra?.chatHubUrl as string | undefined;
+  if (!url) return { send: () => false, typing: () => {}, read: () => {}, close: () => {} };
+
   let closedByUs = false;
-  let attempt = 0;
   let everOpened = false;
+  let attempt = 0;
   let timer: ReturnType<typeof setTimeout> | undefined;
 
-  const schedule = () => {
-    const delay = Math.min(15000, 1000 * 2 ** attempt);
-    attempt += 1;
-    timer = setTimeout(connect, delay);
-  };
+  const connection = new signalR.HubConnectionBuilder()
+    .withUrl(url, {
+      accessTokenFactory: async () => (await secureStorage.get(storageKeys.accessToken)) ?? '',
+    })
+    // Never give up (the default policy stops after four attempts)
+    .withAutomaticReconnect({
+      nextRetryDelayInMilliseconds: (ctx) => retryDelay(ctx.previousRetryCount),
+    })
+    .build();
 
-  async function connect() {
-    const base = Constants.expoConfig?.extra?.chatWsUrl as string | undefined;
-    const accessToken = await secureStorage.get(storageKeys.accessToken)
-    if (closedByUs || !base) return;
-    if (closedByUs) return;
-    if (!accessToken) {
-      schedule();
-      return;
+  const mine = (payload: HubOrder) => payload.orderId === opts.orderId;
+
+  connection.on(
+    'ChatMessage',
+    (p: HubMessage) => mine(p) && opts.onEvent({ type: 'message', message: p.message })
+  );
+  connection.on(
+    'ChatMessageAck',
+    (p: HubAck) =>
+      mine(p) &&
+      opts.onEvent({ type: 'ack', clientId: p.clientId, id: p.id, createdAt: p.createdAt })
+  );
+  connection.on('ChatTyping', (p: HubOrder) => mine(p) && opts.onEvent({ type: 'typing' }));
+  connection.on('ChatRead', (p: HubRead) => mine(p) && opts.onEvent({ type: 'read', at: p.at }));
+  connection.on('ChatClosed', (p: HubOrder) => mine(p) && opts.onEvent({ type: 'closed' }));
+
+  connection.onreconnecting(() => opts.onClose());
+  connection.onreconnected(async () => {
+    try {
+      await connection.invoke('JoinOrderChat', opts.orderId);
+      opts.onOpen(true);
+    } catch {
+      // Could not rejoin: drop the connection so the retry loop starts over
+      connection.stop().catch(() => {});
     }
-    ws = new WebSocket(
-      `${base}/orders/${opts.orderId}/chat?token=${encodeURIComponent(accessToken)}`
-    );
-    ws.onopen = () => {
+  });
+  connection.onclose(() => {
+    opts.onClose();
+    if (!closedByUs) timer = setTimeout(start, retryDelay(attempt++));
+  });
+
+  async function start() {
+    if (closedByUs) return;
+    try {
+      await connection.start();
+      if (closedByUs) {
+        await connection.stop();
+        return;
+      }
+      await connection.invoke('JoinOrderChat', opts.orderId);
+      attempt = 0;
       opts.onOpen(everOpened);
       everOpened = true;
-      attempt = 0;
-    };
-    ws.onmessage = (e) => {
-      try {
-        opts.onEvent(JSON.parse(String(e.data)) as ChatServerEvent);
-      } catch {
-        // ignore malformed frames
-      }
-    };
-    ws.onclose = () => {
-      opts.onClose();
-      if (!closedByUs) schedule();
-    };
-    ws.onerror = () => {};
+    } catch {
+      if (closedByUs) return;
+      // Joining can fail after start(); reset to Disconnected so start() can run again
+      await connection.stop().catch(() => {});
+      timer = setTimeout(start, retryDelay(attempt++));
+    }
   }
 
-  const sendRaw = (payload: object) => {
-    if (ws?.readyState !== WebSocket.OPEN) return false;
-    ws.send(JSON.stringify(payload));
-    return true;
-  };
+  start();
 
-  connect();
+  const isOpen = () => connection.state === signalR.HubConnectionState.Connected;
 
   return {
-    send: (text, clientId) => sendRaw({ type: 'send', clientId, text }),
-    typing: () => void sendRaw({ type: 'typing' }),
-    read: () => void sendRaw({ type: 'read' }),
+    send: (text, clientId) => {
+      if (!isOpen()) return false;
+      connection
+        .invoke('SendMessage', { orderId: opts.orderId, clientId, text })
+        .catch(() => opts.onEvent({ type: 'send_failed', clientId }));
+      return true;
+    },
+    typing: () => {
+      if (isOpen()) connection.send('Typing', opts.orderId).catch(() => {});
+    },
+    read: () => {
+      if (isOpen()) connection.send('MarkRead', opts.orderId).catch(() => {});
+    },
     close: () => {
       closedByUs = true;
       if (timer) clearTimeout(timer);
-      ws?.close();
+      connection.stop().catch(() => {});
     },
   };
 }
