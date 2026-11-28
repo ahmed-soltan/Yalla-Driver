@@ -1,10 +1,22 @@
 // src/entities/offer/api/offer-api.ts
 import { request } from '@/shared/api/client';
-import type { AcceptResult, CounterOffer, RejectReason } from '@/entities/offer/model/offer-types';
+import { getErrorStatus } from '@/shared/api/error-utils';
+import type {
+  AcceptResult,
+  CounterOffer,
+  OpenOffersResponse,
+  RejectReason,
+} from '@/entities/offer/model/offer-types';
 
 // One switch for this feature. Flip to false to hit the real backend.
 const USE_MOCK = __DEV__;
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** Offers that are still valid for this captain right now (same shape as NewOrderRequest). */
+export async function getOpenOffers(): Promise<OpenOffersResponse> {
+  if (USE_MOCK) return []; // in dev the hub mock produces the offers
+  return request<OpenOffersResponse>({ method: 'GET', url: '/captain/offers/open' });
+}
 
 export async function acceptOffer(orderId: string): Promise<AcceptResult> {
   if (USE_MOCK) {
@@ -46,5 +58,5 @@ export async function counterOffer(
 
 /** True when the server says the offer is gone (expired, taken, cancelled). */
 export function isOfferGone(error: unknown): boolean {
-  return (error as { response?: { status?: number } })?.response?.status === 409;
+  return getErrorStatus(error) === 409;
 }

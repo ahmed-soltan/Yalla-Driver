@@ -2,12 +2,6 @@ import { apiRequest, withErrorHandling } from '@/shared/api/client';
 import type { AuthTokens, CaptainUser, RefreshedAuthTokens } from '../model/types';
 
 type OtpRequest = { verificationId: string; expiresAt?: string };
-type DeviceInfo = {
-  deviceId: string;
-  deviceName: string;
-  platform: 'android' | 'ios' | 'web';
-  deviceModel: string;
-};
 
 const mockVerificationId = 'dev-verification-id';
 const mockAccessToken = 'dev-access-token';
@@ -16,7 +10,7 @@ const mockRefreshToken = 'dev-refresh-token';
 let mockUser: CaptainUser = {
   id: 1,
   phoneNumber: '01028114679',
-  fullName: "Ahmed Sultan",
+  fullName: 'Ahmed Sultan',
   email: 'ahmed.sultan@example.com',
   avatarUrl: null,
   dateOfBirth: '2004-02-21',
@@ -32,11 +26,11 @@ export function requestSignupOtp(phoneNumber: string) {
     mockUser = {
       ...mockUser,
       phoneNumber,
-      fullName: "Ahmed Sultan",
-      email: 'ahmed.sultan@example.com',
+      fullName: null,
+      email: null,
       avatarUrl: null,
-      dateOfBirth: '2004-02-21',
-      gender: 'MALE',
+      dateOfBirth: null,
+      gender: null,
     };
     return Promise.resolve<OtpRequest>({ verificationId: mockVerificationId });
   }
@@ -44,7 +38,7 @@ export function requestSignupOtp(phoneNumber: string) {
   return request<OtpRequest>({
     method: 'POST',
     url: '/auth/signup/request-otp',
-    data: { phoneNumber, accountType: 'CAPTAIN' },
+    data: { phoneNumber, accountType: 'PASSENGER' },
   });
 }
 
@@ -61,16 +55,11 @@ export function requestLoginOtp(phoneNumber: string) {
   return request<OtpRequest>({
     method: 'POST',
     url: '/auth/login/request-otp',
-    data: { phoneNumber },
+    data: { phoneNumber, accountType: 'PASSENGER' },
   });
 }
 
-export function verifySignupOtp(input: {
-  verificationId: string;
-  phoneNumber: string;
-  code: string;
-  device: DeviceInfo;
-}) {
+export function verifySignupOtp(input: { phoneNumber: string; code: string }) {
   if (__DEV__) {
     return Promise.resolve<AuthTokens>({
       accessToken: mockAccessToken,
@@ -83,16 +72,11 @@ export function verifySignupOtp(input: {
   return request<AuthTokens>({
     method: 'POST',
     url: '/auth/signup/verify-otp',
-    data: { ...input, accountType: 'CAPTAIN' },
+    data: { ...input, accountType: 'PASSENGER' },
   });
 }
 
-export function verifyLoginOtp(input: {
-  verificationId: string;
-  phoneNumber: string;
-  code: string;
-  device: DeviceInfo;
-}) {
+export function verifyLoginOtp(input: { phoneNumber: string; code: string }) {
   if (__DEV__) {
     return Promise.resolve<AuthTokens>({
       accessToken: mockAccessToken,
@@ -105,7 +89,7 @@ export function verifyLoginOtp(input: {
   return request<AuthTokens>({
     method: 'POST',
     url: '/auth/login/verify-otp',
-    data: input,
+    data: { ...input, accountType: 'PASSENGER' },
   });
 }
 
@@ -177,7 +161,7 @@ export function refreshAuthTokens(refreshToken: string) {
   return request<RefreshedAuthTokens>({
     method: 'POST',
     url: '/auth/refresh',
-    data: { refreshToken },
+    data: { refreshToken, accountType: 'PASSENGER' },
   });
 }
 

@@ -24,7 +24,7 @@ export async function getAuthDeviceInfo() {
   return {
     deviceId: await getDeviceId(),
     deviceName,
-    platform: Platform.OS as 'android' | 'ios' | 'web',
+    platform: Platform.OS as 'android' | 'ios',
     deviceModel: Device.modelName ?? deviceName,
   };
 }

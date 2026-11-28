@@ -6,7 +6,6 @@ import { useRequestOtp } from '@/features/auth/services/use-request-otp';
 import { useVerifyOtp } from '@/features/auth/services/use-verify-otp';
 import { useAuthStore } from '@/shared/hooks/auth-store';
 import { formatPhoneForDisplay } from '@/shared/lib/phone';
-import { getAuthDeviceInfo } from '@/shared/lib/device';
 import { secureStorage, storageKeys } from '@/shared/lib/storage';
 import { Text } from '@/shared/ui/text';
 import { ScreenError, ScreenLayout } from '@/shared/ui/screen-layout';
@@ -21,7 +20,6 @@ export function VerifyScreen() {
   const {
     mode = 'signup',
     phone = '',
-    verificationId = '',
   } = useLocalSearchParams<{
     mode?: 'signup' | 'login';
     phone?: string;
@@ -32,7 +30,6 @@ export function VerifyScreen() {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [seconds, setSeconds] = useState(45);
-  const [currentVerificationId, setCurrentVerificationId] = useState(verificationId);
   const inputRefs = useRef<Array<TextInput | null>>([]);
   const mutation = useVerifyOtp(mode);
   const resend = useRequestOtp(mode);
@@ -52,13 +49,10 @@ export function VerifyScreen() {
 
     setError('');
     setIsSubmitting(true);
-    const device = await getAuthDeviceInfo();
     mutation.mutate(
       {
-        verificationId: currentVerificationId,
         phoneNumber: phone,
         code: nextCode,
-        device,
       },
       {
         onSuccess: async (tokens) => {
@@ -121,7 +115,6 @@ export function VerifyScreen() {
   const handleResend = () => {
     resend.mutate(phone, {
       onSuccess: async (result) => {
-        setCurrentVerificationId(result.verificationId);
         await secureStorage.set(storageKeys.verificationId, result.verificationId);
         setCode('');
         setDigits(Array(6).fill(''));

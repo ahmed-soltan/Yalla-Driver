@@ -1,15 +1,13 @@
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Keyboard, Platform, TextInput, TouchableOpacity, View } from 'react-native';
+import { Keyboard, Platform, TextInput, View } from 'react-native';
 
 import { useRequestOtp } from '@/features/auth/services/use-request-otp';
-import { secureStorage, storageKeys } from '@/shared/lib/storage';
 import { normalizeEgyptianPhone } from '@/shared/lib/phone';
 import { Button } from '@/shared/ui/button';
 import { Text } from '@/shared/ui/text';
 import { ScreenError, ScreenHeader, ScreenLayout } from '@/shared/ui/screen-layout';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
-import { Image } from 'expo-image';
 
 const route = (path: string) => path as never;
 
@@ -35,11 +33,10 @@ export function PhoneScreen() {
 
     setError('');
     mutation.mutate(normalized, {
-      onSuccess: async (result) => {
-        await secureStorage.set(storageKeys.verificationId, result.verificationId);
+      onSuccess: async () => {
         router.push(
           route(
-            `/(auth)/verify?mode=${mode}&phone=${encodeURIComponent(normalized)}&verificationId=${encodeURIComponent(result.verificationId)}`
+            `/(auth)/verify?mode=${mode}&phone=${encodeURIComponent(normalized)}`
           )
         );
         Keyboard.dismiss();

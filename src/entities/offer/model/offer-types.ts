@@ -62,6 +62,8 @@ export type OrderOfferServiceType = OrderOffer['serviceType'] & ServiceType;
 /** An offer plus the moment this device received it (for the countdown bar). */
 export type QueuedOffer = OrderOffer & { receivedAt: number };
 
+export type OpenOffersResponse = OrderOffer[];
+
 export type RejectReason = 'FARE_TOO_LOW' | 'TOO_FAR' | 'BUSY' | 'OTHER';
 
 export type AcceptResult = { orderId: string; status: 'ACCEPTED'; acceptedAt: string };
